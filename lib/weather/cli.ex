@@ -6,7 +6,7 @@ defmodule Weather.CLI do
   @switch_aliases [s: :short, c: :celcius]
 
   def main(argv) do
-    weather_data = ProgressBar.render_spinner([frames: :braille, done: :remove], fn ->
+    weather_data = ProgressBar.render_spinner(spinner_options, fn ->
       argv
       |> parse_args
       |> process
@@ -60,5 +60,18 @@ defmodule Weather.CLI do
       {:ok, current_weather} -> {current_weather, location, switches}
       error -> error
     end
+  end
+
+  defp spinner_options do
+    text = Enum.random [
+      "Asking around...",
+      "Stepping outside...",
+      "Calling friends...",
+      "Why are you asking me? JK, I'll check..",
+      "Computig weathers...",
+      "Looking it up and stuff...",
+      "Checking with a friend who knows..."
+    ]
+    [frames: :braille, text: text,done: :remove]
   end
 end
