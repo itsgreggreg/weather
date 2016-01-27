@@ -2,8 +2,6 @@ defmodule Weather.Mixfile do
   use Mix.Project
   use Mix.Config
 
-  config :weather, my_ip_url: "http://bot.whatismyipaddress.com/"
-
   def project do
     [app: :weather,
      version: "0.0.1",
@@ -33,7 +31,10 @@ defmodule Weather.Mixfile do
   defp deps do
     [
       {:httpoison, "~> 0.8.0"},
-      {:poison, "~> 2.0"}
+      {:poison, "~> 2.0"},
+      {:tzdata, "~> 0.5.6"},
+      {:progress_bar, path: "~/Trash/progress_bar"},
+      {:timex, "~> 1.0"}
     ]
   end
 end
