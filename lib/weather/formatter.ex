@@ -2,8 +2,8 @@ defmodule Weather.Formatter do
 
   def puts(weather, location, switches) do
     IO.puts("""
-      Current Weather in #{location.city} \
-      #{temp(weather["currently"]["temperature"], switches, true)} and \
+      Current Weather in #{location.city} is: \
+      #{temp(weather["currently"]["temperature"], switches, true)}, \
       #{String.capitalize weather["currently"]["summary"]}\
       """)
 
@@ -14,24 +14,24 @@ defmodule Weather.Formatter do
       times = pluck(hourly_data, "time")
       |> Enum.map(&hour_from_unix(&1))
       |> space_and_join(3, " ")
-      IO.puts "  Time: #{times}"
+      IO.puts "  Time:#{times}"
 
       unit = if {:celcius, true} in switches, do: "C", else: "F"
       temps = pluck(hourly_data, "temperature")
       |> Enum.map(&round(&1))
       |> Enum.map(&temp(&1, switches))
       |> space_and_join(3, " ")
-      IO.puts "  Temp: #{temps}°#{unit}"
+      IO.puts "  Temp:#{temps}°#{unit}"
 
       precips = pluck(hourly_data, "precipProbability")
       |> Enum.map(&(round(&1*100)))
       |> space_and_join(3, " ")
-      IO.puts "Precip: #{precips}%"
+      IO.puts "Precip:#{precips}%"
 
       humids = pluck(hourly_data, "humidity")
       |> Enum.map(&round(&1*100))
       |> space_and_join(3, " ")
-      IO.puts " Humid: #{humids}%"
+      IO.puts " Humid:#{humids}%"
     end
 
     :ok
@@ -48,7 +48,7 @@ defmodule Weather.Formatter do
   end
 
   defp space_and_join(list, spaces, sep) do
-    Enum.map(list, &String.ljust("#{&1}", spaces))
+    Enum.map(list, &String.rjust(String.strip("#{&1}"), spaces))
     |> Enum.join(sep)
   end
 
