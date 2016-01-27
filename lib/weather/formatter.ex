@@ -3,7 +3,7 @@ defmodule Weather.Formatter do
   def puts(weather, location, switches) do
     IO.puts("""
       Current Weather in #{location.city} \
-      #{round(weather["currently"]["temperature"])}°F and \
+      #{temp(weather["currently"]["temperature"], switches, true)} and \
       #{String.capitalize weather["currently"]["summary"]}\
       """)
 
@@ -16,10 +16,12 @@ defmodule Weather.Formatter do
       |> space_and_join(3, " ")
       IO.puts "  Time: #{times}"
 
+      unit = if {:celcius, true} in switches, do: "C", else: "F"
       temps = pluck(hourly_data, "temperature")
       |> Enum.map(&round(&1))
+      |> Enum.map(&temp(&1, switches))
       |> space_and_join(3, " ")
-      IO.puts "  Temp: #{temps}°F"
+      IO.puts "  Temp: #{temps}°#{unit}"
 
       precips = pluck(hourly_data, "precipProbability")
       |> Enum.map(&(round(&1*100)))
@@ -48,6 +50,22 @@ defmodule Weather.Formatter do
   defp space_and_join(list, spaces, sep) do
     Enum.map(list, &String.ljust("#{&1}", spaces))
     |> Enum.join(sep)
+  end
+
+  defp temp(num, switches, false), do: temp(num, switches)
+  defp temp(num, switches, true) do
+    unit = (case {:celcius, true} in switches do
+      true  -> "°C"
+      false -> "°F"
+    end)
+    "#{temp(num, switches)}#{unit}"
+  end
+
+  defp temp(num, switches) do
+    if {:celcius, true} in switches do
+      num = (num - 32) / 9 * 5
+    end
+    round(num)
   end
 
 end
