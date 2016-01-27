@@ -1,5 +1,6 @@
 defmodule Weather.CLI do
-  import Weather.LocationParser,  only: [parse_location: 1]
+  # import Weather.LocationParser,  only: [parse_location: 1]
+  import Weather.GoogleGeocode, only: [geocode_location: 1]
 
   @switches [short: :boolean, celcius: :boolean]
   @switch_aliases [s: :short, c: :celcius]
@@ -23,7 +24,7 @@ defmodule Weather.CLI do
     case args do
       {switches,[],[]} -> {:no_location, switches}
       {switches,location,[]} ->
-        {Enum.join(location, " ") |> parse_location, switches}
+        {:geocode_location, Enum.join(location, " "), switches}
     end
   end
 
@@ -43,6 +44,13 @@ defmodule Weather.CLI do
   def process({:no_location, switches}) do
     case Weather.UserLocator.locate_user do
       {:ok, location = %Weather.Location{}} -> process(location, switches)
+      error -> error
+    end
+  end
+
+  def process({:geocode_location, location, switches}) do
+    case geocode_location(location) do
+      {:ok, loc = %Weather.Location{}} -> process(loc, switches)
       error -> error
     end
   end
