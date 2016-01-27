@@ -28,7 +28,7 @@ defmodule Weather.CLI do
   # end
   #
   def process(location) do
-    short_location = location.zip_code || location.city
+    short_location = location.city || location.zip_code
     IO.puts "Current Weather for #{short_location}"
     case Weather.OpenWeatherMap.get_current_weather(location) do
       {:ok, current_weather = %Weather.CurrentWeather{}} ->
