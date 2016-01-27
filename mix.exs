@@ -16,7 +16,7 @@ defmodule Weather.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :httpoison]]
+    [applications: [:logger, :httpoison, :calendar]]
   end
 
   # Dependencies can be Hex packages:
@@ -32,9 +32,10 @@ defmodule Weather.Mixfile do
     [
       {:httpoison, "~> 0.8.0"},
       {:poison, "~> 2.0"},
-      {:tzdata, "~> 0.5.6"},
-      {:progress_bar, path: "~/Trash/progress_bar"},
-      {:timex, "~> 1.0"}
+      {:progress_bar, github: "itsgreggreg/progress_bar"},
+      {:timex, "~> 1.0"},
+      {:tzdata, "~> 0.1.8"},
+      {:calendar, "~> 0.12.4"}
     ]
   end
 end
