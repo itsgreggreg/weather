@@ -2,8 +2,8 @@ defmodule Weather.CLI do
   # import Weather.LocationParser,  only: [parse_location: 1]
   import Weather.GoogleGeocode, only: [geocode_location: 1]
 
-  @switches [short: :boolean, celcius: :boolean]
-  @switch_aliases [s: :short, c: :celcius]
+  @switches [short: :boolean, celcius: :boolean, help: :boolean]
+  @switch_aliases [s: :short, c: :celcius, h: :help]
 
   def main(argv) do
     weather_data = ProgressBar.render_spinner(spinner_options, fn ->
@@ -12,6 +12,7 @@ defmodule Weather.CLI do
       |> process
     end)
     case weather_data do
+      <<msg::binary>> -> IO.puts msg
       {weather, location, switches} ->
         Weather.Formatter.puts(weather, location, switches)
       {:error, reason} -> IO.puts "OOPS.. #{reason}"
@@ -22,6 +23,7 @@ defmodule Weather.CLI do
     args = OptionParser.parse(argv, switches: @switches, aliases: @switch_aliases)
     |> parse_unknown_args
     case args do
+      {[help: true], _, _} -> :help
       {switches,[],[]} -> {:no_location, switches}
       {switches,location,[]} ->
         {:geocode_location, Enum.join(location, " "), switches}
@@ -60,6 +62,15 @@ defmodule Weather.CLI do
       {:ok, current_weather} -> {current_weather, location, switches}
       error -> error
     end
+  end
+
+  def process(:help) do
+    """
+    A little command line utility for checking the weather.
+    Options:
+      --celcius, -c : Get all temperatures in celcius
+      --short  , -s : Get just the current weather
+    """
   end
 
   defp spinner_options do
