@@ -11,7 +11,7 @@ defmodule Weather.ForecastIo do
   end
 
   def api_url(%Weather.Location{latitude: lat, longitude: lon}) when
-             not is_nil(lat) and not is_nil(lon) do
+             is_float(lat) and is_float(lon) do
     "#{@url}#{lat},#{lon}"
   end
 
