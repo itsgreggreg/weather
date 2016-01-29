@@ -45,6 +45,13 @@ defmodule Weather.CLI do
     {switches, b, []}
   end
 
+  def process(location, switches) do
+    case Weather.ForecastIo.get_current_weather(location) do
+      {:ok, current_weather} -> {current_weather, location, switches}
+      error -> error
+    end
+  end
+
   def process({:no_location, switches}) do
     case Weather.UserLocator.locate_user do
       {:ok, location = %Weather.Location{}} -> process(location, switches)
@@ -55,13 +62,6 @@ defmodule Weather.CLI do
   def process({:geocode_location, location, switches}) do
     case geocode_location(location) do
       {:ok, loc = %Weather.Location{}} -> process(loc, switches)
-      error -> error
-    end
-  end
-
-  def process(location, switches) do
-    case Weather.ForecastIo.get_current_weather(location) do
-      {:ok, current_weather} -> {current_weather, location, switches}
       error -> error
     end
   end
