@@ -2,8 +2,9 @@ defmodule Weather.CLI do
   # import Weather.LocationParser,  only: [parse_location: 1]
   import Weather.GoogleGeocode, only: [geocode_location: 1]
 
-  @switches [short: :boolean, celcius: :boolean, help: :boolean]
-  @switch_aliases [s: :short, c: :celcius, h: :help]
+  @switches [short: :boolean, celcius: :boolean, help: :boolean, version: :boolean]
+  @switch_aliases [s: :short, c: :celcius, h: :help, v: :version]
+  @project Weather.Mixfile.project()
 
   def main(argv) do
     weather_data = ProgressBar.render_spinner(spinner_options, fn ->
@@ -24,6 +25,7 @@ defmodule Weather.CLI do
     |> parse_unknown_args
     case args do
       {[help: true], _, _} -> :help
+      {[version: true], _, _} -> :version
       {switches,[],[]} -> {:no_location, switches}
       {switches,location,[]} ->
         {:geocode_location, Enum.join(location, " "), switches}
@@ -70,7 +72,13 @@ defmodule Weather.CLI do
     Options:
       --celcius, -c : Get all temperatures in celcius
       --short  , -s : Get just the current weather
+      --version, -v : Version of this application
+      --help   , -h : This help message
     """
+  end
+
+  def process(:version) do
+    "weather #{@project[:version]}"
   end
 
   defp spinner_options do
