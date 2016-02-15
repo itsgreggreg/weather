@@ -16,7 +16,7 @@ defmodule Weather.CLI do
       <<msg::binary>> -> IO.puts msg
       {weather, location, switches} ->
         Weather.Formatter.puts(weather, location, switches)
-      {:error, reason} -> IO.puts "OOPS.. #{reason}"
+      {:error, reason} -> IO.puts "OOPS.. #{inspect reason}"
     end
   end
 
@@ -87,7 +87,7 @@ defmodule Weather.CLI do
       "Stepping outside...",
       "Calling friends...",
       "Why are you asking me? JK, I'll check..",
-      "Computig weathers...",
+      "Computing weathers...",
       "Looking it up and stuff...",
       "Checking with a friend who knows..."
     ]
