@@ -21,17 +21,17 @@ defmodule Weather.Formatter do
       |> Enum.map(&round(&1))
       |> Enum.map(&temp(&1, switches))
       |> space_and_join(3, " ")
-      IO.puts "  Temp:#{temps}°#{unit}"
+      IO.puts "  Temp:#{temps} °#{unit}"
 
       precips = pluck(hourly_data, "precipProbability")
       |> Enum.map(&(round(&1*100)))
       |> space_and_join(3, " ")
-      IO.puts "Precip:#{precips}%"
+      IO.puts "Precip:#{precips} %"
 
       humids = pluck(hourly_data, "humidity")
       |> Enum.map(&round(&1*100))
       |> space_and_join(3, " ")
-      IO.puts " Humid:#{humids}%"
+      IO.puts " Humid:#{humids} %"
     end
     today = hd weather["daily"]["data"]
     {:ok, sunrise} = dateTime_from_unix(today["sunriseTime"])
