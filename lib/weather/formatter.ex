@@ -12,7 +12,7 @@ defmodule Weather.Formatter do
       |> Enum.take(12)
 
       times = pluck(hourly_data, "time")
-      |> Enum.map(&hour_from_unix(&1))
+      |> Enum.map(&("#{dateTime_from_unix(&1).hour}"))
       |> space_and_join(3, " ")
       IO.puts "  Time:#{times}"
 
@@ -33,14 +33,20 @@ defmodule Weather.Formatter do
       |> space_and_join(3, " ")
       IO.puts " Humid:#{humids}%"
     end
+    today = hd weather["daily"]["data"]
+    {:ok, sunrise} = dateTime_from_unix(today["sunriseTime"])
+      |> Calendar.Strftime.strftime("%H:%M")
+    {:ok, sunset} = dateTime_from_unix(today["sunsetTime"])
+      |> Calendar.Strftime.strftime("%H:%M")
+    IO.puts "Sunrise #{sunrise}, Sunset #{sunset}"
 
     :ok
   end
 
-  defp hour_from_unix(timestamp) do
+  defp dateTime_from_unix(timestamp) do
     {:ok, time} = Calendar.DateTime.Parse.unix!(timestamp)
     |> Calendar.DateTime.shift_zone(Timex.Date.local.timezone.full_name)
-    "#{time.hour} "
+    time
   end
 
   defp pluck(list, key) do
